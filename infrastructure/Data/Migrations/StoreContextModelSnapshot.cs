@@ -6,7 +6,7 @@ using infrastructure.Data;
 
 #nullable disable
 
-namespace ecommerce.Data.Migrations
+namespace infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
     partial class StoreContextModelSnapshot : ModelSnapshot
