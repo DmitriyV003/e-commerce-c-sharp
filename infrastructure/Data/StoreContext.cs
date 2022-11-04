@@ -1,7 +1,7 @@
-﻿using e_commerce.Models;
+﻿using core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace e_commerce.Data;
+namespace infrastructure.Data;
 
 public class StoreContext : DbContext
 {
