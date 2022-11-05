@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using e_commerce.Data;
+using infrastructure.Data;
 
 #nullable disable
 
-namespace ecommerce.Data.Migrations
+namespace infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
     [Migration("20221030163904_Initial")]
