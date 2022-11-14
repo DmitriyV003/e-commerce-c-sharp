@@ -8,7 +8,8 @@ public class MappingProfiles : Profile
 {
     protected MappingProfiles()
     {
-        CreateMap<Product, ProductToReturnDto>();
+        CreateMap<Product, ProductToReturnDto>()
+            .ForMember(p => p.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
         CreateMap<ProductType, ProductTypeToReturnDto>();
         CreateMap<ProductBrand, ProductBrandToReturnDto>();
     }
