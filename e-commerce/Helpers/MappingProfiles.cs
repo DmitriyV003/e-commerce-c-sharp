@@ -6,7 +6,7 @@ namespace e_commerce.Helpers;
 
 public class MappingProfiles : Profile
 {
-    protected MappingProfiles()
+    public MappingProfiles()
     {
         CreateMap<Product, ProductToReturnDto>()
             .ForMember(p => p.PictureUrl, o => o.MapFrom<ProductUrlResolver>());

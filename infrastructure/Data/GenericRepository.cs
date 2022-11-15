@@ -9,7 +9,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Base
 {
     protected readonly StoreContext _context;
 
-    protected GenericRepository(StoreContext context)
+    public GenericRepository(StoreContext context)
     {
         _context = context;
     }
