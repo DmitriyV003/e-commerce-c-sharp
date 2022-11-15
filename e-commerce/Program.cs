@@ -4,6 +4,12 @@ using infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseSentry(o =>
+{
+    o.Dsn = "https://dedb94df589241748403262d751d50cc@o4504165013520384.ingest.sentry.io/4504165014896640";
+    o.Debug = true;
+    o.TracesSampleRate = 1.0;
+});
 
 // Add services to the container.
 
@@ -41,11 +47,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseRouting();
+app.UseSentryTracing();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.MapControllers();
 

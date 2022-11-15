@@ -9,7 +9,7 @@ namespace e_commerce.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController : ControllerBase
+public class ProductController : BaseController
 {
     private IGenericRepository<Product> _repository;
     private IMapper _mapper;
@@ -19,7 +19,7 @@ public class ProductController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("index")]
+    [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Product>>> Index()
     {
         var specification = new ProductsWithTypesAndBrandsSpecification().WithBrands().WithTypes();
@@ -36,9 +36,7 @@ public class ProductController : ControllerBase
             .WithTypes();
         var product = await _repository.GetModelWithSpecification(specification);
         if (product != null)
-        {
             return Ok(_mapper.Map<Product, ProductToReturnDto>(product));
-        }
 
         return NotFound();
     }
