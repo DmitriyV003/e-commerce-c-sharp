@@ -1,7 +1,11 @@
+using System.Net;
 using core.Interfaces;
+using e_commerce.Errors;
 using e_commerce.Helpers;
 using infrastructure.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseSentry(o =>
@@ -20,8 +24,27 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opts =>
+{
+    opts.SwaggerDoc("v1", new OpenApiInfo(){Title = "E-Commerce", Version = "v1"});
+    opts.EnableAnnotations();
+});
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.Configure<ApiBehaviorOptions>(opts =>
+{
+    opts.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors)
+            .Select(x => x.ErrorMessage)
+            .ToArray();
+
+        var res = new ApiValidationErrorResponse((int)HttpStatusCode.BadRequest, errors);
+
+        return new BadRequestObjectResult(res);
+    };
+});
 
 var app = builder.Build();
 
@@ -45,16 +68,14 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseRouting();
 app.UseSentryTracing();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

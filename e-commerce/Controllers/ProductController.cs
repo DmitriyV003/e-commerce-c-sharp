@@ -1,9 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using core.Interfaces;
 using core.Models;
 using core.Specifications;
 using e_commerce.Dto;
+using e_commerce.Errors;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace e_commerce.Controllers;
 
@@ -29,15 +32,17 @@ public class ProductController : BaseController
     }
 
     [HttpGet("{id:long}")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, type: typeof(ApiResponse), contentTypes: new []{"application/json"})]
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(ProductToReturnDto), contentTypes: new []{"application/json"})]
     public async Task<ActionResult<ProductToReturnDto>> Product(long id)
     {
         var specification = new ProductsWithTypesAndBrandsSpecification(x => x.Id == id)
             .WithBrands()
             .WithTypes();
         var product = await _repository.GetModelWithSpecification(specification);
-        if (product != null)
-            return Ok(_mapper.Map<Product, ProductToReturnDto>(product));
+        
+        if (product == null) return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
 
-        return NotFound();
+        return Ok(_mapper.Map<Product, ProductToReturnDto>(product));
     }
 }
