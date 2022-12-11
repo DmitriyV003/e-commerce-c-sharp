@@ -7,20 +7,18 @@ public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product
 {
     public ProductsWithTypesAndBrandsSpecification(string sort) : base()
     {
-        if (!string.IsNullOrEmpty(sort))
+        if (string.IsNullOrEmpty(sort)) return;
+        switch (sort)
         {
-            switch (sort)
-            {
-                case "priceAsc":
-                    AddOrderBy(x => x.Price);
-                    break;
-                case "priceDesc":
-                    AddOrderByDesc(x => x.Price);
-                    break;
-                default:
-                    AddOrderBy(x => x.Name);
-                    break;
-            }
+            case "priceAsc":
+                AddOrderBy(x => x.Price);
+                break;
+            case "priceDesc":
+                AddOrderByDesc(x => x.Price);
+                break;
+            default:
+                AddOrderBy(x => x.Name);
+                break;
         }
     }
 
