@@ -23,9 +23,10 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Product>>> Index()
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(IReadOnlyList<ProductToReturnDto>), contentTypes: new []{"application/json"})]
+    public async Task<ActionResult<IReadOnlyList<Product>>> Index([FromQuery]string sort)
     {
-        var specification = new ProductsWithTypesAndBrandsSpecification().WithBrands().WithTypes();
+        var specification = new ProductsWithTypesAndBrandsSpecification(sort).WithBrands().WithTypes();
         var products = await _repository.ListAsync(specification);
 
         return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
