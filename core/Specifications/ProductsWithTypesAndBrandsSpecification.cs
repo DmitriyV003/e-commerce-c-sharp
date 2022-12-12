@@ -5,7 +5,10 @@ namespace core.Specifications;
 
 public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
 {
-    public ProductsWithTypesAndBrandsSpecification(string sort) : base()
+    public ProductsWithTypesAndBrandsSpecification(string sort, int? brandId, int? typeId) 
+        : base(x => 
+            (!brandId.HasValue || x.ProductBrandId == brandId) && 
+            (!typeId.HasValue || x.ProductTypeId == typeId))
     {
         if (string.IsNullOrEmpty(sort)) return;
         switch (sort)
