@@ -25,6 +25,11 @@ public class SpecificationEvaluator<TModel> where TModel : Base
             query = query.OrderByDescending(specification.OrderByDesc);
         }
 
+        if (specification.IsPaginatingEnabled)
+        {
+            query = query.Skip(specification.Skip).Take(specification.Take);
+        }
+
         query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
 
         return query;

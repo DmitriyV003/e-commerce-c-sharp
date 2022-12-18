@@ -5,13 +5,13 @@ namespace core.Specifications;
 
 public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
 {
-    public ProductsWithTypesAndBrandsSpecification(string sort, int? brandId, int? typeId) 
+    public ProductsWithTypesAndBrandsSpecification(ProductsSpecificationParams productParams) 
         : base(x => 
-            (!brandId.HasValue || x.ProductBrandId == brandId) && 
-            (!typeId.HasValue || x.ProductTypeId == typeId))
+            (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && 
+            (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId))
     {
-        if (string.IsNullOrEmpty(sort)) return;
-        switch (sort)
+        if (string.IsNullOrEmpty(productParams.Sort)) return;
+        switch (productParams.Sort)
         {
             case "priceAsc":
                 AddOrderBy(x => x.Price);
@@ -23,6 +23,8 @@ public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product
                 AddOrderBy(x => x.Name);
                 break;
         }
+        
+        Paginate(productParams.PerPage * (productParams.Page - 1), productParams.PerPage);
     }
 
     public ProductsWithTypesAndBrandsSpecification(Expression<Func<Product, bool>> criteria, string? sort = null) : base(criteria)
