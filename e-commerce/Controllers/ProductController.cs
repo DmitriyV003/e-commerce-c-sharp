@@ -24,7 +24,7 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(IReadOnlyList<ProductToReturnDto>), contentTypes: new []{"application/json"})]
+    [SwaggerResponse(StatusCodes.Status200OK, type: typeof(Pagination<ProductToReturnDto>), contentTypes: new []{"application/json"})]
     public async Task<ActionResult<Pagination<ProductToReturnDto>>> Index([FromQuery] ProductsSpecificationParams productParams)
     {
         var specification = new ProductsWithTypesAndBrandsSpecification(productParams).WithBrands().WithTypes();

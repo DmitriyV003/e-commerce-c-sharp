@@ -10,6 +10,13 @@ public class ProductsSpecificationParams
     public int Page { get; set; } = 1;
 
     private int _perPage = 5;
+    private string _search;
+
+    public string Search
+    {
+        get => _search;
+        set => _search = value.ToLower();
+    }
 
     public int PerPage
     {
