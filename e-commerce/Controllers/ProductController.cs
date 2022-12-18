@@ -5,6 +5,7 @@ using core.Models;
 using core.Specifications;
 using e_commerce.Dto;
 using e_commerce.Errors;
+using e_commerce.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -24,12 +25,16 @@ public class ProductController : BaseController
 
     [HttpGet]
     [SwaggerResponse(StatusCodes.Status200OK, type: typeof(IReadOnlyList<ProductToReturnDto>), contentTypes: new []{"application/json"})]
-    public async Task<ActionResult<IReadOnlyList<Product>>> Index([FromQuery] ProductsSpecificationParams productParams)
+    public async Task<ActionResult<Pagination<ProductToReturnDto>>> Index([FromQuery] ProductsSpecificationParams productParams)
     {
         var specification = new ProductsWithTypesAndBrandsSpecification(productParams).WithBrands().WithTypes();
+        var countSpecification = new ProductWithFiltersForCountSpecification(productParams);
+        var totalItems = await _repository.CountAsync(countSpecification);
         var products = await _repository.ListAsync(specification);
 
-        return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+        var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
+        return Ok(new Pagination<ProductToReturnDto>(productParams.Page, productParams.PerPage, totalItems, data));
     }
 
     [HttpGet("{id:long}")]
