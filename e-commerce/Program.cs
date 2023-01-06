@@ -1,10 +1,12 @@
 using System.Net;
 using core.Interfaces;
+using core.Models.Identity;
 using core.Specifications;
 using e_commerce.Errors;
 using e_commerce.Helpers;
 using infrastructure.Data;
 using infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -26,6 +28,11 @@ builder.Services.AddDbContext<AppIdentityDbContext>(x =>
 {
     x.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
 });
+var b = builder.Services.AddIdentityCore<User>();
+b = new IdentityBuilder(b.UserType, b.Services);
+b.AddEntityFrameworkStores<AppIdentityDbContext>();
+b.AddSignInManager<SignInManager<User>>();
+builder.Services.AddAuthentication();
 
 builder.Services.AddDbContext<StoreContext>(opt => 
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
