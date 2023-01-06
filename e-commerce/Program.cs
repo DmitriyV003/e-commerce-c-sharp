@@ -1,5 +1,6 @@
 using System.Net;
 using core.Interfaces;
+using core.Specifications;
 using e_commerce.Errors;
 using e_commerce.Helpers;
 using infrastructure.Data;
@@ -19,6 +20,7 @@ builder.WebHost.UseSentry(o =>
 // Add services to the container.
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 builder.Services.AddDbContext<StoreContext>(opt => 
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
