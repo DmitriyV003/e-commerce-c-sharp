@@ -4,6 +4,7 @@ using core.Specifications;
 using e_commerce.Errors;
 using e_commerce.Helpers;
 using infrastructure.Data;
+using infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,10 +22,14 @@ builder.WebHost.UseSentry(o =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddDbContext<AppIdentityDbContext>(x =>
+{
+    x.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection"));
+});
 
 builder.Services.AddDbContext<StoreContext>(opt => 
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddSingleton<ConnectionMultiplexer>(c =>
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var conf = ConfigurationOptions.Parse(
         builder.Configuration.GetConnectionString("Redis"), 

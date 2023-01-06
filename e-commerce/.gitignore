@@ -3,3 +3,6 @@
 e-commerce.db
 e-commerce.db-shm
 e-commerce.db-wal
+identity.db
+identity.db-shm
+identity.db-wal
